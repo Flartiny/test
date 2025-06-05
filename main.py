@@ -1,3 +1,4 @@
+import base64
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger, AstrBotConfig
@@ -26,7 +27,8 @@ class MyPlugin(Star):
     async def helloworld(self, event: AstrMessageEvent):
         for msg in event.message_obj.message:
             if isinstance(msg, Comp.Image):
-                logger.info(msg.convert_to_base64())
+                base64_data = await msg.convert_to_base64()
+                logger.info(base64_data)
             
 
 
