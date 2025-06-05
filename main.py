@@ -1,6 +1,6 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
-from astrbot.api import logger
+from astrbot.api import logger, AstrBotConfig
 from astrbot.api.event.filter import (
     command,
     regex,
@@ -10,7 +10,8 @@ from astrbot.api.event.filter import (
     event_message_type,
     EventMessageType,
 )
-from astrbot.api import logger, AstrBotConfig
+import astrbot.api.message_components as Comp
+
 
 @register("helloworld", "YourName", "一个简单的 Hello World 插件", "1.0.0")
 class MyPlugin(Star):
@@ -24,7 +25,9 @@ class MyPlugin(Star):
     @event_message_type(EventMessageType.ALL)
     async def helloworld(self, event: AstrMessageEvent):
         for msg in event.message_obj.message:
-            logger.info(msg)
+            if isinstance(msg, Comp.Image):
+                logger.info(msg.convert_to_base64())
+            
 
 
     async def terminate(self):
