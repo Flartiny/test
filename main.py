@@ -26,17 +26,15 @@ class MyPlugin(Star):
     @event_message_type(EventMessageType.ALL)
     async def helloworld(self, event: AstrMessageEvent):
         if event.get_platform_name() == "aiocqhttp":
-            # qq
-            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
-            assert isinstance(event, AiocqhttpMessageEvent)
-            client = event.bot # 得到 client
-            
-            ret = await client.api.call_action('nc_get_rkey') # 调用 协议端  API
-            logger.info(f"rkey1: {ret}")
-            
-            ret = await client.api.call_action('get_rkey') # 调用 协议端  API
-            logger.info(f"rkey2: {ret}")
-        
+            for msg in event.message_obj.message:
+                if isinstance(msg, Comp.Image):
+                    logger.info(str(msg))
+
+            # from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
+            # assert isinstance(event, AiocqhttpMessageEvent)
+            # client = event.bot # 得到 client
+            # ret = await client.api.call_action('nc_get_rkey') # 调用 协议端  API
+            # logger.info(f"rkey1: {ret}")
 
 
     async def terminate(self):
