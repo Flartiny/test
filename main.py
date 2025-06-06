@@ -25,9 +25,18 @@ class MyPlugin(Star):
     # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `/helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
     @event_message_type(EventMessageType.ALL)
     async def helloworld(self, event: AstrMessageEvent):
-        msg= str(event.message_obj.raw_message)
-        logger.info(msg)
+        if event.get_platform_name() == "aiocqhttp":
+            # qq
+            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
+            assert isinstance(event, AiocqhttpMessageEvent)
+            client = event.bot # 得到 client
             
+            ret = await client.api.call_action('/nc_get_rkey') # 调用 协议端  API
+            logger.info(f"rkey1: {ret}")
+            
+            ret = await client.api.call_action('/get_rkey') # 调用 协议端  API
+            logger.info(f"rkey2: {ret}")
+        
 
 
     async def terminate(self):
