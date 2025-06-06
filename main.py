@@ -13,7 +13,7 @@ from astrbot.api.event.filter import (
     EventMessageType,
 )
 import astrbot.api.message_components as Comp
-
+from astrbot.core.star.filter.command import GreedyStr
 
 @register("helloworld", "YourName", "一个简单的 Hello World 插件", "1.0.0")
 class MyPlugin(Star):
@@ -25,23 +25,8 @@ class MyPlugin(Star):
     
     # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `/helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
     @event_message_type(EventMessageType.ALL)
-    async def helloworld(self, event: AstrMessageEvent):
-        if event.get_platform_name() == "aiocqhttp":
-            files = []
-            for msg in event.message_obj.message:
-                if isinstance(msg, Comp.Image):
-                    files.append(msg.file)
-
-            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
-            assert isinstance(event, AiocqhttpMessageEvent)
-            client = event.bot # 得到 client
-
-            for file in files:
-                payloads = {
-                    "file_id": file
-                }
-                ret = await client.api.call_action('get_image', **payloads) # 调用 协议端  API
-                logger.info(f"ret: {ret}")
+    async def helloworld(self, event: AstrMessageEvent, pre: str,content: GreedyStr):
+        logger.info(f"pre: {pre}, content: {content}")
 
     @filter.command("pic")
     async def pic(self, event: AstrMessageEvent):
