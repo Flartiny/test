@@ -31,10 +31,10 @@ class MyPlugin(Star):
             assert isinstance(event, AiocqhttpMessageEvent)
             client = event.bot # 得到 client
             
-            ret = await client.api.call_action('/nc_get_rkey') # 调用 协议端  API
+            ret = await client.api.call_action('nc_get_rkey') # 调用 协议端  API
             logger.info(f"rkey1: {ret}")
             
-            ret = await client.api.call_action('/get_rkey') # 调用 协议端  API
+            ret = await client.api.call_action('get_rkey') # 调用 协议端  API
             logger.info(f"rkey2: {ret}")
         
 
