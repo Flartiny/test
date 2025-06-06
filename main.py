@@ -25,7 +25,8 @@ class MyPlugin(Star):
     # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `/helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
     @event_message_type(EventMessageType.ALL)
     async def helloworld(self, event: AstrMessageEvent):
-        logger.info("hello dev")
+        msg= str(event.message_obj.raw_message)
+        logger.info(msg)
             
 
 
