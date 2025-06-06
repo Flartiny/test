@@ -1,4 +1,5 @@
 import base64
+import json
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger, AstrBotConfig
@@ -26,15 +27,20 @@ class MyPlugin(Star):
     @event_message_type(EventMessageType.ALL)
     async def helloworld(self, event: AstrMessageEvent):
         if event.get_platform_name() == "aiocqhttp":
+            files = []
             for msg in event.message_obj.message:
                 if isinstance(msg, Comp.Image):
-                    logger.info(str(msg))
+                    files.append(msg.file)
 
-            # from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
-            # assert isinstance(event, AiocqhttpMessageEvent)
-            # client = event.bot # 得到 client
-            # ret = await client.api.call_action('nc_get_rkey') # 调用 协议端  API
-            # logger.info(f"rkey1: {ret}")
+            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
+            assert isinstance(event, AiocqhttpMessageEvent)
+            client = event.bot # 得到 client
+            for file in files:
+                payloads = {
+                    "file_id": file
+                }
+                ret = await client.api.call_action('get_image', **payloads) # 调用 协议端  API
+                logger.info(f"ret: {ret}")
 
 
     async def terminate(self):
