@@ -35,6 +35,11 @@ class MyPlugin(Star):
             from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
             assert isinstance(event, AiocqhttpMessageEvent)
             client = event.bot # 得到 client
+            payloads = {
+                "file_id": "226723D7B1EE3BF02E9CFD8236EE468B.jpg"
+            }
+            ret = await client.api.call_action('get_image', **payloads) # 调用 协议端  API
+            logger.info(f"ret: {ret}")
             for file in files:
                 payloads = {
                     "file_id": file
