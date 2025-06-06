@@ -35,11 +35,7 @@ class MyPlugin(Star):
             from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
             assert isinstance(event, AiocqhttpMessageEvent)
             client = event.bot # 得到 client
-            payloads = {
-                "file_id": "226723D7B1EE3BF02E9CFD8236EE468B.jpg"
-            }
-            ret = await client.api.call_action('get_image', **payloads) # 调用 协议端  API
-            logger.info(f"ret: {ret}")
+
             for file in files:
                 payloads = {
                     "file_id": file
@@ -47,6 +43,20 @@ class MyPlugin(Star):
                 ret = await client.api.call_action('get_image', **payloads) # 调用 协议端  API
                 logger.info(f"ret: {ret}")
 
+    @filter.command("pic")
+    async def pic(self, event: AstrMessageEvent):
+        if event.get_platform_name() == "aiocqhttp":
+            url = "https://multimedia.nt.qq.com.cn/download?appid=1407&fileid=EhS_yFjBzSh-GLln7UhJe02xCPn8yBj8lhcg_woorMGLiqfZjQMyBHByb2RQgL2jAVoQbNgkRYZ-s6-iuP1AG_ybv3oChA0"
+            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
+            assert isinstance(event, AiocqhttpMessageEvent)
+            client = event.bot # 得到 client
+            rkeys = await client.api.call_action('get_rkey')
+            
+            rkey_data = next((rkey for rkey in rkeys if rkey['type'] == 'group'), None)
+            rkey = rkey_data['rkey']
+            
+            pic_url = url+rkey
+            logger.info(f"pic_url: {pic_url}")
 
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
