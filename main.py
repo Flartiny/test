@@ -27,16 +27,40 @@ class MyPlugin(Star):
     # @event_message_type(EventMessageType.ALL)
     # async def helloworld(self, event: AstrMessageEvent):
     #     logger.info("helloworld")
-
-    @filter.command("helloworld")
-    async def helloworld(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        ret = f"pre: {pre}, content: {content}"
+    @filter.command("greed0")
+    async def greed0(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
+        ret = f"greed0: pre: {pre}, content: {content}"
+        yield event.plain_result(ret)
+    
+    @filter.command("space greed")
+    async def space_greed(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
+        ret = f"space_greed: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
 
-    @filter.command("helloworld2")
-    async def helloworld2(self, event: AstrMessageEvent, pre: str):
-        ret = f"pre: {pre}"
+    @filter.command_group("greed_group")
+    def greed_group(self):
+        pass
+
+    @greed_group.command("greed1")
+    async def greed1(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
+        ret = f"greed1: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
+    
+    @filter.command_group("space greed group")
+    async def space_greed_group(self):
+        pass
+    
+    @space_greed_group.command("space greed1")
+    async def space_greed1(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
+        ret = f"space greed1: pre: {pre}, content: {content}"
+        yield event.plain_result(ret)
+    
+    @space_greed_group.command("space_greed2")
+    async def space_greed2(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
+        ret = f"space greed2: pre: {pre}, content: {content}"
+        yield event.plain_result(ret)
+
+
 
     @filter.command("pic")
     async def pic(self, event: AstrMessageEvent):
