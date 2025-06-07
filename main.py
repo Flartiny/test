@@ -30,7 +30,13 @@ class MyPlugin(Star):
 
     @filter.command("helloworld")
     async def helloworld(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        logger.info(f"pre: {pre}, content: {content}")
+        ret = f"pre: {pre}, content: {content}"
+        yield event.plain_result(ret)
+
+    @filter.command("helloworld2")
+    async def helloworld2(self, event: AstrMessageEvent, pre: str):
+        ret = f"pre: {pre}"
+        yield event.plain_result(ret)
 
     @filter.command("pic")
     async def pic(self, event: AstrMessageEvent):
