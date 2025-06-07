@@ -24,8 +24,12 @@ class MyPlugin(Star):
         """可选择实现异步的插件初始化方法，当实例化该插件类之后会自动调用该方法。"""
     
     # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `/helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
-    @event_message_type(EventMessageType.ALL)
-    async def helloworld(self, event: AstrMessageEvent, pre: str,content: GreedyStr):
+    # @event_message_type(EventMessageType.ALL)
+    # async def helloworld(self, event: AstrMessageEvent):
+    #     logger.info("helloworld")
+
+    @filter.command("helloworld")
+    async def helloworld(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         logger.info(f"pre: {pre}, content: {content}")
 
     @filter.command("pic")
