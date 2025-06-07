@@ -28,6 +28,12 @@ class MyPlugin(Star):
     # @event_message_type(EventMessageType.ALL)
     # async def helloworld(self, event: AstrMessageEvent):
     #     logger.info("helloworld")
+    @filter.command("type")
+    async def ttype(self, event: AstrMessageEvent, param1: int, param2: str, param3: bool, param4: float, content: GreedyStr):
+        ret = f"param1: {param1}, param2: {param2}, param3: {param3}, param4: {param4}, content: {content}"
+        yield event.plain_result(ret)
+        
+
     @filter.command("greed0", alias={"alias_greed0", "alias_greed_0"})
     async def greed0(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         ret = f"greed0: pre: {pre}, content: {content}"
