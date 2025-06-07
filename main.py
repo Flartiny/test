@@ -1,3 +1,4 @@
+from ast import alias
 import base64
 import json
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
@@ -27,12 +28,12 @@ class MyPlugin(Star):
     # @event_message_type(EventMessageType.ALL)
     # async def helloworld(self, event: AstrMessageEvent):
     #     logger.info("helloworld")
-    @filter.command("greed0")
+    @filter.command("greed0", alias={"alias_greed0", "alias_greed_0"})
     async def greed0(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         ret = f"greed0: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
     
-    @filter.command("space greed")
+    @filter.command("space greed", alias={"alias_space_greed"})
     async def space_greed(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         ret = f"space_greed: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
@@ -41,7 +42,7 @@ class MyPlugin(Star):
     def greed_group(self):
         pass
 
-    @greed_group.command("greed1")
+    @greed_group.command("greed1", alias={"alias_greed1"})
     async def greed1(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         ret = f"greed1: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
@@ -50,12 +51,12 @@ class MyPlugin(Star):
     async def space_greed_group(self):
         pass
     
-    @space_greed_group.command("space greed1")
+    @space_greed_group.command("space greed1", alias={"alias_space_greed1"})
     async def space_greed1(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         ret = f"space greed1: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
     
-    @space_greed_group.command("space_greed2")
+    @space_greed_group.command("space_greed2", alias={"alias_space_greed2"})
     async def space_greed2(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
         ret = f"space greed2: pre: {pre}, content: {content}"
         yield event.plain_result(ret)
