@@ -3,6 +3,7 @@ import base64
 import json
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
+from astrbot.api.event import CommandResult, MessageChain
 from astrbot.api import logger, AstrBotConfig
 from astrbot.api.event.filter import (
     command,
@@ -15,73 +16,47 @@ from astrbot.api.event.filter import (
 )
 import astrbot.api.message_components as Comp
 from astrbot.core.star.filter.command import GreedyStr
+from typing import Optional
+
 
 @register("helloworld", "YourName", "一个简单的 Hello World 插件", "1.0.0")
 class MyPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
 
-    async def initialize(self):
-        """可选择实现异步的插件初始化方法，当实例化该插件类之后会自动调用该方法。"""
-    
-    # 注册指令的装饰器。指令名为 helloworld。注册成功后，发送 `/helloworld` 就会触发这个指令，并回复 `你好, {user_name}!`
-    # @event_message_type(EventMessageType.ALL)
-    # async def helloworld(self, event: AstrMessageEvent):
-    #     logger.info("helloworld")
-    @filter.command("type")
-    async def ttype(self, event: AstrMessageEvent, param1: int, param2: str, param3: bool, param4: float, content: GreedyStr):
-        ret = f"param1: {param1}, param2: {param2}, param3: {param3}, param4: {param4}, content: {content}"
-        yield event.plain_result(ret)
-        
+    @filter.command("view_plugins")
+    async def view_plugins(self, event: AstrMessageEvent):
+        plugins = self.context.get_all_stars()
+        yield event.plain_result(f"plugins: {plugins}")
 
-    @filter.command("greed0", alias={"alias_greed0", "alias_greed_0"})
-    async def greed0(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        ret = f"greed0: pre: {pre}, content: {content}"
-        yield event.plain_result(ret)
-    
-    @filter.command("space greed", alias={"alias_space_greed"})
-    async def space_greed(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        ret = f"space_greed: pre: {pre}, content: {content}"
-        yield event.plain_result(ret)
-
-    @filter.command_group("greed_group")
-    def greed_group(self):
-        pass
-
-    @greed_group.command("greed1", alias={"alias_greed1"})
-    async def greed1(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        ret = f"greed1: pre: {pre}, content: {content}"
-        yield event.plain_result(ret)
-    
-    @filter.command_group("space greed group")
-    async def space_greed_group(self):
-        pass
-    
-    @space_greed_group.command("space greed1", alias={"alias_space_greed1"})
-    async def space_greed1(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        ret = f"space greed1: pre: {pre}, content: {content}"
-        yield event.plain_result(ret)
-    
-    @space_greed_group.command("space_greed2", alias={"alias_space_greed2"})
-    async def space_greed2(self, event: AstrMessageEvent, pre: str, content: GreedyStr):
-        ret = f"space greed2: pre: {pre}, content: {content}"
-        yield event.plain_result(ret)
-
-
+    @filter.command("po")
+    async def po(
+        self,
+        event: AstrMessageEvent,
+        content: Optional[str] = "",
+        options: GreedyStr = GreedyStr,
+    ):
+        is_content = True if content else False
+        yield event.plain_result(
+            f"is_content: {is_content}, content: {content}, options: {options}"
+        )
 
     @filter.command("pic")
     async def pic(self, event: AstrMessageEvent):
         if event.get_platform_name() == "aiocqhttp":
             url = "https://multimedia.nt.qq.com.cn/download?appid=1407&fileid=EhS_yFjBzSh-GLln7UhJe02xCPn8yBj8lhcg_woorMGLiqfZjQMyBHByb2RQgL2jAVoQbNgkRYZ-s6-iuP1AG_ybv3oChA0"
-            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import AiocqhttpMessageEvent
+            from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import (
+                AiocqhttpMessageEvent,
+            )
+
             assert isinstance(event, AiocqhttpMessageEvent)
-            client = event.bot # 得到 client
-            rkeys = await client.api.call_action('get_rkey')
-            
-            rkey_data = next((rkey for rkey in rkeys if rkey['type'] == 'group'), None)
-            rkey = rkey_data['rkey']
-            
-            pic_url = url+rkey
+            client = event.bot  # 得到 client
+            rkeys = await client.api.call_action("get_rkey")
+
+            rkey_data = next((rkey for rkey in rkeys if rkey["type"] == "group"), None)
+            rkey = rkey_data["rkey"]
+
+            pic_url = url + rkey
             logger.info(f"pic_url: {pic_url}")
 
     async def terminate(self):
